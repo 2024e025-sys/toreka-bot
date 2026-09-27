@@ -1,0 +1,22 @@
+name: LivePocket Toreka Monitor
+on:
+ schedule:
+   # 10分ごとに自動実行
+   - cron: '*/10 * * * *'
+ workflow_dispatch:
+jobs:
+ monitor:
+   runs-on: ubuntu-latest
+   steps:
+     - name: Check out repository
+       uses: actions/checkout@v4
+     - name: Set up Python
+       uses: actions/setup-python@v5
+       with:
+         python-version: '3.10'
+     - name: Install dependencies
+       run: |
+         python -m pip install --upgrade pip
+         pip install requests google-genai
+     - name: Run script
+       run: python main.py
