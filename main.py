@@ -9,23 +9,30 @@ from google import genai
 # ==========================================
 LINE_CHANNEL_ACCESS_TOKEN = "f1854ad486840f4cbe6d715bc2f71356"
 GEMINI_API_KEY = "AQ.Ab8RN6L7-ZpYKp65CjD4SEO6f_lkFECqggp3ixX_7EhJvEkrWg"
-
+GOOGLE_API_KEY = "AIzaSyABtXz5nsu42VMRE0HgwyR8Cpdz3tj-PNk"
+SEARCH_ENGINE_ID ="73c699951d11a45b6"
 # XからLivePocketのリンクを含むツイートを検索する処理（トレカ全般）
 def search_x_livepocket():
     search_query = '(トレカ OR ポケカ OR ワンピース OR 遊戯王 OR デュエマ) "t.livepocket.jp"'
-    encoded_query = urllib.parse.quote(search_query)
-    rss_url = "https://news.google.com/rss/search?q=site:x.com+livepocket&hl=ja&gl=JP&ceid=JP:ja"
+    url = "https://www.googleapis.com/customsearch/v1"
+    params = {
+        "key": GOOGLE_API_KEY,
+        "cx": SEARCH_ENGINE_ID,
+        "q": search_query
+    }
+    
+    response = requests.get(url, params=params)
+    data = response.json()
+    
     tweets = []
-    try:
-        response = requests.get(rss_url, timeout=10)
-        if response.status_code == 200:
-            items = re.findall(r'<description>(.*?)</description>', response.text, re.DOTALL)
-            for item in items[:10]:
-                clean_text = re.sub(r'<[^>]+>', '', item)
-                if "t.livepocket.jp" in clean_text:
-                    tweets.append(clean_text)
-    except Exception as e:
-        print(f"X検索エラー: {e}")
+    if "items" in data:
+        for item in data["items"]:
+            tweets.append({
+                "title": item.get("title", ""),
+                "link": item.get("link", ""),
+                "snippet": item.get("snippet", "")
+            })
+            
     return tweets
 
 # Gemini APIによる中部地方・トレカ判定
