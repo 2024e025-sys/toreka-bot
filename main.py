@@ -14,7 +14,7 @@ GEMINI_API_KEY = "AQ.Ab8RN6L7-ZpYKp65CjD4SEO6f_lkFECqggp3ixX_7EhJvEkrWg"
 def search_x_livepocket():
     search_query = '(トレカ OR ポケカ OR ワンピース OR 遊戯王 OR デュエマ) "t.livepocket.jp"'
     encoded_query = urllib.parse.quote(search_query)
-    rss_url = f"https://nitter.privacydev.net/search/rss?f=tweets&q={encoded_query}"
+    rss_url ="https://news.google.com/rss/search?q=site:x.com+%22t.livepocket.jp%22&hl=ja&gl=JP&ceid=JP:ja" 
     tweets = []
     try:
         response = requests.get(rss_url, timeout=10)
